@@ -34,6 +34,6 @@ class Solution:
 coins = [1, 2, 5]
 amount = 11
 
-coins= [2]
+coins = [2]
 amount = 3
 print(Solution().coinChange(coins, amount))
