@@ -55,9 +55,9 @@ def traversal_preorder(node):
 def traversal_inorder(node):
     rets = []
     if node is not None:
-        rets.extend(traversal_preorder(node.left))
+        rets.extend(traversal_inorder(node.left))
         rets.append(node.val)
-        rets.extend(traversal_preorder(node.right))
+        rets.extend(traversal_inorder(node.right))
     return rets
 
 
