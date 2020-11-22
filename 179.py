@@ -38,11 +38,8 @@ class Solution:
         def cmp(str1, str2):
             return int(f"{str1}{str2}") - int(f"{str2}{str1}")
 
-        sorted_nums = sorted(map(str, nums), key=functools.cmp_to_key(cmp), reverse=True)
-        if sorted_nums[0] == '0':
-            return '0'
-        else:
-            return "".join(sorted_nums)
+        ret = "".join(sorted(map(str, nums), key=functools.cmp_to_key(cmp), reverse=True))
+        return ret if ret[0] != '0' else '0'
 
 
 nums = [3, 30, 34, 5, 9]
