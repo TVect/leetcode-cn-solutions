@@ -32,6 +32,7 @@ s: "abab" p: "ab"
 """
 
 from typing import List
+import collections
 
 
 class Solution:
@@ -62,7 +63,7 @@ class Solution:
         return rets
 
     # 滑动窗口 + 一些过滤
-    def findAnagrams(self, s: str, p: str) -> List[int]:
+    def findAnagrams_2(self, s: str, p: str) -> List[int]:
         rets = []
         window, needs = {}, {}
         for c in p:
@@ -84,11 +85,33 @@ class Solution:
                 right += 1
         return rets
 
+    # 滑动窗口模板
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        left, right = 0, 0
+        need = collections.Counter(p)
+        window = {character: 0 for character in need}
+        valid = 0
+        s_size, p_size = len(s), len(p)
+        rets = []
+        while right < s_size:
+            character = s[right]
+            right += 1
+            if character in need:
+                window[character] += 1
+                if window[character] == need[character]:
+                    valid += 1
+            while valid == len(need):
+                if p_size == right - left:
+                    rets.append(left)
+                character = s[left]
+                left += 1
+                if character in need:
+                    if window[character] == need[character]:
+                        valid -= 1
+                    window[character] -= 1
+        return rets
 
-s = "cbaebabacd"
-p = "abc"
 
-s = "abab"
-p = "ab"
-
+s, p = "cbaebabacd", "abc"
+s, p = "abab", "ab"
 print(Solution().findAnagrams(s, p))
