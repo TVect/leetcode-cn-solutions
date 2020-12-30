@@ -28,7 +28,8 @@ from typing import List
 
 
 class Solution:
-    def maxProfit(self, prices: List[int]) -> int:
+
+    def maxProfit_1(self, prices: List[int]) -> int:
         min_price = float('inf')
         max_profit = 0
         for price in prices:
@@ -37,6 +38,15 @@ class Solution:
             else:
                 min_price = price
         return max_profit
+
+    def maxProfit(self, prices: List[int]) -> int:
+        # dp[0] 当前时刻不持有的最大利润
+        # dp[1] 当前时刻持有的最大利润
+        dp = [0, -float('inf')]
+        for price in prices:
+            # 因为只能做一次购买，所以 dp[idx][1] = max(dp[idx][1], -price)
+            dp = [max(dp[0], dp[1] + price), max(dp[1], -price)]
+        return max(dp)
 
 
 prices = [7, 1, 5, 3, 6, 4]
