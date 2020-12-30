@@ -38,7 +38,7 @@ class Solution:
         return profifs[-1]
 
     # 动态规划
-    def maxProfit(self, prices: List[int]) -> int:
+    def maxProfit_2(self, prices: List[int]) -> int:
         prices_size = len(prices)
         if prices_size == 0:
             return 0
@@ -57,6 +57,31 @@ class Solution:
             profits[idx][2] = max(profits[idx-1][1], profits[idx-1][2])
         return max(profits[-1])
 
+    # 动态规划模板：使用三个状态
+    def maxProfit_3(self, prices: List[int]) -> int:
+        # dp[0]: 当前不持有,且不处于冷冻期 的最大利润
+        # dp[1]: 当前不持有,且处于冷冻期 的最大利润
+        # dp[2]: 当前持有 的最大利润
+        dp = [0, -float('inf'), -float('inf')]
+        for price in prices:
+            dp = [max(dp[0], dp[1]),
+                  dp[2] + price,
+                  max(dp[2], dp[0] - price)]
+        return max(dp)
+
+    # 动态规划模板: 使用两个状态
+    def maxProfit(self, prices: List[int]) -> int:
+        # dp[0]: 当前不持有 的最大利润
+        # dp[1]: 当前持有 的最大利润
+        dp_minus1 = [0, -float('inf')]
+        dp_minus2 = [0, -float('inf')]
+        for price in prices:
+            dp = [max(dp_minus1[0], dp_minus1[1] + price),
+                  max(dp_minus1[1], dp_minus2[0] - price)]
+            dp_minus1, dp_minus2 = dp, dp_minus1
+        return max(dp_minus1)
+
 
 prices = [1, 2, 3, 0, 2]
+prices = [1]
 print(Solution().maxProfit(prices))
