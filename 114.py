@@ -86,7 +86,7 @@ class Solution:
             prev_node = node
 
     # 原地操作：找到每个节点的前驱节点
-    def flatten(self, root: TreeNode) -> None:
+    def flatten_3(self, root: TreeNode) -> None:
         """
         Do not return anything, modify root in-place instead.
         """
@@ -102,6 +102,20 @@ class Solution:
                 node.right = node.left
                 node.left = None
             node = node.right
+
+    # 递归解法
+    def flatten(self, root: TreeNode) -> None:
+        if not root:
+            return root
+        self.flatten(root.left)
+        self.flatten(root.right)
+
+        left_node, right_node = root.left, root.right
+        root.left, root.right = None, left_node
+        p = root
+        while p.right:
+            p = p.right
+        p.right = right_node
 
 
 def construct_tree(num_list):
