@@ -61,6 +61,26 @@ class Solution:
         traverse(root)
         return rets
 
+    # 更高效的做法
+    def findDuplicateSubtrees_1(self, root: TreeNode) -> List[TreeNode]:
+        import collections
+        trees = collections.defaultdict()
+        # !!! IMPORTANT
+        trees.default_factory = trees.__len__
+        count = collections.Counter()
+        ans = []
+
+        def lookup(node):
+            if node:
+                uid = trees[node.val, lookup(node.left), lookup(node.right)]
+                count[uid] += 1
+                if count[uid] == 2:
+                    ans.append(node)
+                return uid
+
+        lookup(root)
+        return ans
+
 
 def construct_tree(num_list):
     all_nodes = [None if num is None else TreeNode(num) for num in num_list]
