@@ -54,7 +54,7 @@ class Solution:
         return is_in_bound(root, -float('inf'), float('inf'))
 
     # 用迭代法做中序遍历，同时判断得到的数字是否从小到大
-    def isValidBST(self, root: TreeNode) -> bool:
+    def isValidBST_2(self, root: TreeNode) -> bool:
         stack = []
         last_val = -float('inf')
 
@@ -71,6 +71,23 @@ class Solution:
                     last_val = node.val
                 current_node = node.right
         return True
+
+    # 用递归法做中序遍历，同时判断得到的数字是否从小到大
+    def isValidBST(self, root: TreeNode) -> bool:
+
+        last_node_val = -float('inf')
+
+        def traverse(node):
+            nonlocal last_node_val
+            if node is not None:
+                if not traverse(node.left) or node.val <= last_node_val:
+                    return False
+                last_node_val = node.val
+                if not traverse(node.right):
+                    return False
+            return True
+
+        return traverse(root)
 
 
 def construct_tree(num_list):
