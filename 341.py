@@ -42,6 +42,28 @@ class NestedInteger:
        """
 
 
+class NestedIterator1:
+    """ 借鉴 二叉树 遍历的做法来实现展平嵌套列表 """
+
+    def __init__(self, nestedList: [NestedInteger]):
+        self.all_integers = []
+        for nestedItem in nestedList:
+            self.traverse(nestedItem)
+
+    def next(self) -> int:
+        return self.all_integers.pop(0)
+
+    def hasNext(self) -> bool:
+        return len(self.all_integers) > 0
+
+    def traverse(self, nestedItem: NestedInteger):
+        if nestedItem.isInteger():
+            self.all_integers.append(nestedItem.getInteger())
+        else:
+            for nestedItem in nestedItem.getList():
+                self.traverse(nestedItem)
+
+
 class NestedIterator:
     def __init__(self, nestedList: [NestedInteger]):
         self.nestedList = nestedList
