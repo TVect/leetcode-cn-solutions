@@ -47,7 +47,7 @@ class Solution:
         return dp[-1][1000+S] if -1000 <= S <= 1000 else 0
 
     # 动态规划 + 空间优化
-    def findTargetSumWays(self, nums: List[int], S: int) -> int:
+    def findTargetSumWays_2(self, nums: List[int], S: int) -> int:
         dp = [0] * 2001
         dp[1000 + nums[0]] += 1
         dp[1000 - nums[0]] += 1
@@ -59,6 +59,24 @@ class Solution:
                     new_dp[jdx - num] += dp[jdx]
             dp = new_dp
         return dp[1000+S] if -1000 <= S <= 1000 else 0
+
+    # 动态规划: 转换为背包问题
+    # sum(pos_symbols) - sum(neg_symbols) = S    =>    sum(positive) = (S + sum(neg_symbols) + sum(pos_symbols)) / 2
+    # 可以转换为背包问题: 寻找子集，使其和为 (S + sum(nums)) / 2
+    def findTargetSumWays(self, nums: List[int], S: int) -> int:
+        nums_sum, nums_size = sum(nums), len(nums)
+        if S > nums_sum or S < -nums_sum:
+            return 0
+        target = int((nums_sum + S) / 2)
+        if target * 2 != nums_sum + S:
+            return 0
+        # 动态规划：dp[i][j] 背包容量为i，且只使用 nums[:j] 时的方法总数
+        # 状态压缩的动态规划：dp[j] 表示只使用到当前为止的数字，有多少种方法可以恰好选出和为 j 的子集
+        dp = [1] + [0] * target
+        for i in range(nums_size):
+            for j in range(target, -1, -1):
+                dp[j] += dp[j-nums[i]] if nums[i] <= j else 0
+        return dp[-1]
 
 
 nums = [1, 1, 1, 1, 1]
