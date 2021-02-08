@@ -23,29 +23,30 @@ from typing import List
 
 class Solution:
 
-    # 二分查找
+    # 动态规划 + 二分查找
     # 时间复杂度：O(n log n)
-    def lengthOfLIS_1(self, nums: List[int]) -> int:
-        # tails[i] 表示(到目前位置)长度为 l+1 的递增子串的最小后缀
-        tails = []
-        for num in nums:
-            # 二分查找得到第一个大于 num 的数
-            left, right = 0, len(tails)
-            while left < right:
-                mid = (left + right) // 2
-                if tails[mid] < num:
-                    left = mid + 1
-                else:
-                    right = mid
-            if left >= len(tails):
-                tails.append(num)
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        # dp[i] 表示以长度为 i 的最大上升子序列的末尾元素的最小值
+        # dp[i] 则应该是一个单调递增的序列
+        dp = [nums[0]]
+        for num in nums[1:]:
+            if num > dp[-1]:
+                dp.append(num)
             else:
-                tails[left] = num
-        return len(tails)
+                # 二分查找到 num 应该所在的位置: dp 中第一个大于 num 的数
+                left_idx, right_idx = 0, len(dp) - 1
+                while left_idx < right_idx:
+                    mid_idx = (left_idx + right_idx) // 2
+                    if num > dp[mid_idx]:
+                        left_idx = mid_idx + 1
+                    else:
+                        right_idx = mid_idx
+                dp[left_idx] = num
+        return len(dp)
 
     # 标准的动态规划做法
     # 时间复杂度：O(n^2)
-    def lengthOfLIS(self, nums: List[int]) -> int:
+    def lengthOfLIS_1(self, nums: List[int]) -> int:
         nums_size = len(nums)
         # dp[i] 表示以 i 为结尾的最长上升子序列
         dp = [1] * nums_size
