@@ -36,7 +36,7 @@ class Solution:
 
     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
         text1_size, text2_size = len(text1), len(text2)
-        # dp[i][j] 表示 text1[:i] 和 text2[:i] 的最大公共子序列
+        # dp[i][j] 表示 text1[:i] 和 text2[:j] 的最大公共子序列
         dp = [[0] * (text2_size + 1) for _ in range(text1_size+1)]
         for text1_idx in range(1, text1_size+1):
             for text2_idx in range(1, text2_size+1):
