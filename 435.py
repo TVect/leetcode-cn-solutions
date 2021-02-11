@@ -30,6 +30,7 @@ from typing import List
 
 class Solution:
 
+    # 贪心算法
     def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
         intervals.sort(key=lambda item: item[1])
         # print(intervals)
@@ -43,6 +44,20 @@ class Solution:
                 # 与之前选出的那个 interval 是相交的
                 res += 1
         return res
+
+    # 动态规划算法
+    def eraseOverlapIntervals_1(self, intervals: List[List[int]]) -> int:
+        if not intervals:
+            return 0
+        intervals.sort()
+        # print(intervals)
+        intervals_cnt = len(intervals)
+        # dp[i] 表示以 intervals[i] 作为最后一个区间时，可以选出的不相交区间的个数
+        dp = [1] * intervals_cnt
+        for idx in range(intervals_cnt):
+            dp[idx] = max([dp[jdx] + 1 for jdx in range(0, idx) if intervals[jdx][1] <= intervals[idx][0]],
+                          default=1)
+        return intervals_cnt - dp[-1]
 
 
 intervals = [[1, 2], [2, 3], [3, 4], [1, 3]]
