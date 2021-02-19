@@ -45,9 +45,7 @@
 class Solution:
 
     def isMatch(self, s: str, p: str) -> bool:
-        s_size = len(s)
-        p_size = len(p)
-
+        s_size, p_size = len(s), len(p)
         memo = {}
 
         def helper(s_idx, p_idx):
@@ -55,22 +53,26 @@ class Solution:
             # 返回 s[:s_idx] 和 p[:p_idx] 是否能完成匹配
             if p_idx == 0:
                 return s_idx == 0
-            if s_idx == 0:
-                if p_idx != 0 and (p[p_idx-1] != '*'):
-                    return False
+
             if (s_idx, p_idx) not in memo:
-                if p[p_idx-1] == '.' or (s_idx > 0 and p[p_idx-1] == s[s_idx-1]):
-                    memo[s_idx, p_idx] = helper(s_idx-1, p_idx-1)
-                elif p[p_idx-1] == '*':
-                    # _* 匹配0次 或者 _* 匹配多次
-                    if s_idx > 0:
-                        memo[s_idx, p_idx] = helper(s_idx, p_idx-2) or \
-                                         (p[p_idx-2] in [".", s[s_idx-1]] and helper(s_idx-1, p_idx))
+                if p[p_idx-1] == "*":
+                    if s_idx == 0:
+                        memo[s_idx, p_idx] = helper(s_idx, p_idx-2)
                     else:
-                        memo[s_idx, p_idx] = helper(s_idx, p_idx - 2)
+                        if p[p_idx-2] == s[s_idx-1] or p[p_idx-2] == '.':
+                            # 匹配 0次 或 多次
+                            memo[s_idx, p_idx] = helper(s_idx, p_idx-2) | helper(s_idx-1, p_idx)
+                        else:
+                            # 匹配 0 次
+                            memo[s_idx, p_idx] = helper(s_idx, p_idx - 2)
                 else:
-                    memo[s_idx, p_idx] = False
-            # print(s_idx, p_idx, memo[s_idx, p_idx])
+                    if s_idx == 0:
+                        memo[s_idx, p_idx] = False
+                    else:
+                        if p[p_idx-1] == s[s_idx-1] or p[p_idx-1] == '.':
+                            memo[s_idx, p_idx] = helper(s_idx-1, p_idx-1)
+                        else:
+                            memo[s_idx, p_idx] = False
             return memo[s_idx, p_idx]
 
         return helper(s_size, p_size)
