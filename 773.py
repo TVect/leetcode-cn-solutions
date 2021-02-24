@@ -44,7 +44,7 @@ import itertools
 
 class Solution:
 
-    def slidingPuzzle(self, board: List[List[int]]) -> int:
+    def slidingPuzzle_1(self, board: List[List[int]]) -> int:
         tuple_board = tuple(itertools.chain(*board))
         queue = [[tuple_board, tuple_board.index(0)]]
         visited = {tuple_board}
@@ -67,6 +67,36 @@ class Solution:
                         if tmp_tuple not in visited:
                             queue.append([tmp_tuple, new_idx])
                             visited.add(tmp_tuple)
+            step += 1
+        return -1
+
+    # BFS: 更优雅的记录当前状态和可移动状态
+    def slidingPuzzle(self, board: List[List[int]]) -> int:
+        board_state = tuple(itertools.chain(*board))
+        queue = [[board_state, board_state.index(0)]]
+        visited = {board_state}
+
+        step = 0
+        neighbors = [[1, 3],
+                     [0, 4, 2],
+                     [1, 5],
+                     [0, 4],
+                     [3, 1, 5],
+                     [4, 2]]
+        while len(queue):
+            queue_size = len(queue)
+            for _ in range(queue_size):
+                state, pos_zero = queue.pop(0)
+                if state == (1, 2, 3, 4, 5, 0):
+                    return step
+                for neighbor in neighbors[pos_zero]:
+                    # 交换 neighbor 和 pos_zero 的位置
+                    tmp_state = list(state)
+                    tmp_state[neighbor], tmp_state[pos_zero] = tmp_state[pos_zero], tmp_state[neighbor]
+                    tmp_state = tuple(tmp_state)
+                    if tmp_state not in visited:
+                        queue.append([tmp_state, neighbor])
+                        visited.add(tmp_state)
             step += 1
         return -1
 
