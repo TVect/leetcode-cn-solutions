@@ -62,7 +62,7 @@ class Solution:
         return s[max_arm_idx - max_arm + 1 : max_arm_idx + max_arm + 1 : 2]
 
     # Manacher Algorithm : implement 2
-    def longestPalindrome(self, s: str) -> str:
+    def longestPalindrome_2(self, s: str) -> str:
         s = "#" + "#".join(s) + "#"
         s_size = len(s)
         arm_lens = [0] * s_size
@@ -87,6 +87,53 @@ class Solution:
                 max_arm_idx = idx
 
         return s[max_arm_idx - max_arm + 1 : max_arm_idx + max_arm + 1 : 2]
+
+    # 动态规划算法
+    def longestPalindrome_3(self, s: str) -> str:
+        s_size = len(s)
+        if s_size == 0:
+            return ""
+
+        optimal_pos, optimal_length = 0, 1
+        # dp[i][j] 表示 s[i, ..., j] 是否为回文串
+        dp = [[False] * s_size for _ in range(s_size)]
+
+        # 初始化
+        for i in range(s_size):
+            dp[i][i] = True
+
+        # 动态规划
+        for i in range(s_size-1, -1, -1):
+            for j in range(i+1, s_size):
+                if s[i] == s[j] and (j == i + 1 or dp[i+1][j-1]):
+                    dp[i][j] = True
+                    tmp_length = j - i + 1
+                    if tmp_length > optimal_length:
+                        optimal_length = tmp_length
+                        optimal_pos = i
+        return s[optimal_pos: optimal_pos + optimal_length]
+
+    # 中心扩展算法
+    def longestPalindrome(self, s: str) -> str:
+        s_size = len(s)
+
+        def helper(left_idx, right_idx):
+            while left_idx >= 0 and right_idx < s_size and s[left_idx] == s[right_idx]:
+                left_idx -= 1
+                right_idx += 1
+            return left_idx + 1, right_idx - left_idx - 1
+
+        optimal_pos, optimal_length = -1, -1
+        for idx in range(s_size):
+            # 从 idx 向左右扩展，得到以 idx 为中心的最长回文字串
+            pos1, length1 = helper(idx, idx)
+            if length1 > optimal_length:
+                optimal_pos, optimal_length = pos1, length1
+            if idx + 1 < s_size:
+                pos2, length2 = helper(idx, idx+1)
+                if length2 > optimal_length:
+                    optimal_pos, optimal_length = pos2, length2
+        return s[optimal_pos: optimal_pos + optimal_length]
 
 
 s = "babad"
