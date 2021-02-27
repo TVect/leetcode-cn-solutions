@@ -31,7 +31,7 @@
 
 class Solution:
 
-    def isSubsequence(self, s: str, t: str) -> bool:
+    def isSubsequence_1(self, s: str, t: str) -> bool:
         s_size, t_size = len(s), len(t)
         s_idx, t_idx = 0, 0
         while s_idx < s_size and t_idx < t_size:
@@ -39,3 +39,35 @@ class Solution:
                 s_idx += 1
             t_idx += 1
         return s_idx == s_size
+
+    # 在 有大量输入的 S，需要依次检查它们是否为 T 的子序列 时的优化
+    # 使用 动态规划 记录下 中间匹配过程需要的一些数据
+    def isSubsequence(self, s: str, t: str) -> bool:
+        s_size, t_size = len(s), len(t)
+        if s_size == 0:
+            return True
+        if t_size == 0:
+            return False
+
+        # dp[i][j] 表示 t[idx:] 中 字符j 出现的第一个位置
+        # 有递推公式 dp[i][j] = j if t[i+1] == j else t[i+1][j]
+        dp = [[-1] * 26 for _ in range(t_size + 1)]
+        dp[-2][ord(t[-1]) - ord('a')] = t_size - 1
+
+        for idx in range(t_size-2, -1, -1):
+            for jdx in range(26):
+                dp[idx][jdx] = idx if ord(t[idx]) - ord('a') == jdx else dp[idx+1][jdx]
+
+        s_idx, t_idx = 0, 0
+        for s_idx in range(s_size):
+            t_idx = dp[t_idx][ord(s[s_idx]) - ord('a')]
+            if t_idx == -1:
+                return False
+            t_idx += 1
+        return True
+
+
+s, t = "", "ahbgdc"
+s, t = "b", "c"
+s, t = "aaaaaa", "bbaaaa"
+print(Solution().isSubsequence(s, t))
