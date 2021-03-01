@@ -31,7 +31,7 @@ class Solution:
     #   *或者/时，弹出堆栈元素做相应操作，将结果压入栈
     # 如果有括号可以采用递归调用的方式.
     # 最终的值为 栈中所有元素的求和
-    def calculate(self, s: str) -> int:
+    def calculate_1(self, s: str) -> int:
         op = "+"
         stack = []
         idx, s_size = 0, len(s)
@@ -55,7 +55,29 @@ class Solution:
 
         return sum(stack)
 
+    def calculate(self, s: str) -> int:
+        op = "+"
+        num = 0
+        stack = []
+        for idx in range(len(s)):
+            if s[idx].isdigit():
+                num = num * 10 + int(s[idx])
+            if (s[idx] in "+-*/") or (idx == len(s) - 1):
+                if op == "+":
+                    stack.append(num)
+                elif op == "-":
+                    stack.append(-num)
+                elif op == "*":
+                    stack.append(stack.pop(-1) * num)
+                elif op == "/":
+                    stack.append(int(stack.pop(-1) / num))
+
+                op = s[idx]
+                num = 0
+        return sum(stack)
+
 
 s = "3+2*2"
-s = "14 - 3/2"
+# s = "14 - 3/2"
+# s = " 3/2 "
 print(Solution().calculate(s))
