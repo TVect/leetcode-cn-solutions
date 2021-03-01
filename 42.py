@@ -26,7 +26,7 @@ from typing import List
 class Solution:
 
     # 维护单调递减的栈，按行储水
-    def trap(self, height: List[int]) -> int:
+    def trap_1(self, height: List[int]) -> int:
         height_size = len(height)
         stack = []
         res = 0
@@ -37,6 +37,45 @@ class Solution:
                 if stack:
                     res += (min(height[stack[-1]], height[idx]) - height[num_idx]) * (idx - stack[-1] - 1)
             stack.append(idx)
+        return res
+
+    # 按列储水, 算出在每个位置能储存多少水
+    def trap_2(self, height: List[int]) -> int:
+        n = len(height)
+        # left_upbounds[i] 表示 height[0, ..., i] 中最大值
+        left_upbounds = [-1] * n
+        for idx in range(n):
+            left_upbounds[idx] = max(left_upbounds[idx-1], height[idx])
+        # right_upbounds[i] 表示 height[i, ..., n-1] 中最大值
+        right_upbounds = [-1] * n
+        for idx in range(n-1, -1, -1):
+            right_upbounds[idx] = max(right_upbounds[(idx+1) % n], height[idx])
+
+        res = 0
+        for idx in range(n):
+            res += min(left_upbounds[idx], right_upbounds[idx]) - height[idx]
+        return res
+
+    # 按列储水, 算出在每个位置能储存多少水
+    # 使用双指针一次遍历
+    def trap(self, height: List[int]) -> int:
+        n = len(height)
+        left, right = 0, n - 1
+        left_upbound, right_upbound = 0, 0
+        res = 0
+        while left <= right:
+            if left_upbound < right_upbound:
+                if height[left] < left_upbound:
+                    res += (left_upbound - height[left])
+                else:
+                    left_upbound = height[left]
+                left += 1
+            else:
+                if height[right] < right_upbound:
+                    res += (right_upbound - height[right])
+                else:
+                    right_upbound = height[right]
+                right -= 1
         return res
 
 
