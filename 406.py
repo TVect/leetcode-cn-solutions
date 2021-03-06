@@ -34,6 +34,21 @@ class Solution:
                          for item in in_people if item != leader]
         return rets
 
+    # 将身高从小到大排列，在插入 [h, k] 时在前面预留k个空位
+    def reconstructQueue_2(self, people: List[List[int]]) -> List[List[int]]:
+        people_cnt = len(people)
+        rets = [0] * people_cnt
+        people.sort(key=lambda item: (item[0], -item[1]))
+        for item in people:
+            blank_cnt = 0
+            for idx in range(people_cnt):
+                if rets[idx] == 0:
+                    if blank_cnt == item[1]:
+                        rets[idx] = item
+                        break
+                    blank_cnt += 1
+        return rets
+
     # 贪心算法
     # 取身高从高到低从今操作，身高高的排好相对顺序之后，插入身高低的，不会影响其前面的高个子人数
     def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
