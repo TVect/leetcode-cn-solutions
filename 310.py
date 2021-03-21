@@ -97,7 +97,7 @@ class Solution:
         return [idx for idx in range(n) if heights[idx] == min_height]
 
     # 拓扑排序
-    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+    def findMinHeightTrees_3(self, n: int, edges: List[List[int]]) -> List[int]:
         neighbors = {idx: set([]) for idx in range(n)}
         indegree = [0] * n
         for edge in edges:
@@ -115,7 +115,38 @@ class Solution:
                 del neighbors[node]
         return nodes_to_remove
 
+    # 拓扑排序: 速度优化
+    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+        if n == 1:
+            return [0]
+        if n == 2:
+            return [0, 1]
+
+        neighbors = {idx: [] for idx in range(n)}
+        indegree = [0] * n
+        for edge in edges:
+            neighbors[edge[0]].append(edge[1])
+            neighbors[edge[1]].append(edge[0])
+            indegree[edge[0]] += 1
+            indegree[edge[1]] += 1
+
+        queue_degree_one = [idx for idx in range(n) if indegree[idx] == 1]
+        while n > 2:
+            # print(queue_degree_one)
+            degree1_cnt = len(queue_degree_one)
+            for _ in range(degree1_cnt):
+                idx = queue_degree_one.pop(0)
+                indegree[idx] = 0
+                for jdx in neighbors[idx]:
+                    if indegree[jdx] > 1:
+                        indegree[jdx] -= 1
+                        if indegree[jdx] == 1:
+                            queue_degree_one.append(jdx)
+            n -= degree1_cnt
+
+        return queue_degree_one
+
 
 n, edges = 4, [[1, 0], [1, 2], [1, 3]]
-n, edges = 6, [[3, 0], [3, 1], [3, 2], [3, 4], [5, 4]]
+# n, edges = 6, [[3, 0], [3, 1], [3, 2], [3, 4], [5, 4]]
 print(Solution().findMinHeightTrees(n, edges))
