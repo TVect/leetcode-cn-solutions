@@ -35,6 +35,15 @@ class Solution:
             k += 1
         return rets
 
+    # 动态规划做法
+    def countBits_1(self, num: int) -> List[int]:
+        dp = [0] * (num + 1)
+        for idx in range(1, num+1):
+            # 如果 idx % 2 == 1, 则 dp[idx] = dp[idx-1]
+            # 如果 idx % 2 == 0, 则 dp[idx] = dp[idx >> 1]
+            dp[idx] = dp[idx-1] + 1if idx & 1 else dp[idx >> 1]
+        return dp
+
 
 num = 5
 print(Solution().countBits(num))
