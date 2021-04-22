@@ -25,7 +25,7 @@ import heapq
 class Solution:
 
     # 最小堆
-    def nthUglyNumber(self, n: int) -> int:
+    def nthUglyNumber_1(self, n: int) -> int:
         seen = {1}
         candidates = [1]
         heapq.heapify(candidates)
@@ -37,6 +37,23 @@ class Solution:
                     heapq.heappush(candidates, tmp)
                     seen.add(tmp)
         return heapq.heappop(candidates)
+
+    # 动态规划
+    def nthUglyNumber(self, n: int) -> int:
+        # dp[i] 表示第 i 个丑数
+        dp = [1]
+        # pt2, pt3, pt5 表示下一个丑数的 备选为 dp[pt2] * 2, dp[pt3] * 3, dp[pt5] * 5
+        pt2, pt3, pt5 = 0, 0, 0
+        while len(dp) < n:
+            min_val = min(dp[pt2] * 2, dp[pt3] * 3, dp[pt5] * 5)
+            if min_val == dp[pt2] * 2:
+                pt2 += 1
+            if min_val == dp[pt3] * 3:
+                pt3 += 1
+            if min_val == dp[pt5] * 5:
+                pt5 += 1
+            dp.append(min_val)
+        return dp[-1]
 
 
 n = 10
