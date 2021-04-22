@@ -24,7 +24,7 @@ import heapq
 class Solution:
 
     # 最小堆
-    def nthSuperUglyNumber(self, n: int, primes: List[int]) -> int:
+    def nthSuperUglyNumber_1(self, n: int, primes: List[int]) -> int:
         seen = {1}
         candidates = [1]
         heapq.heapify(candidates)
@@ -38,6 +38,21 @@ class Solution:
         return heapq.heappop(candidates)
 
     # 动态规划
+    def nthSuperUglyNumber(self, n: int, primes: List[int]) -> int:
+        # dp[i]: 表示 第 i 个丑数
+        dp = [1]
+        n_primes = len(primes)
+        pts = [0] * n_primes
+
+        while len(dp) < n:
+            values = [primes[idx] * dp[pts[idx]] for idx in range(n_primes)]
+            min_val = min(values)
+            dp.append(min_val)
+            for idx in range(n_primes):
+                if values[idx] == min_val:
+                    pts[idx] += 1
+
+        return dp[-1]
 
 
 n, primes = 12, [2, 7, 13, 19]
