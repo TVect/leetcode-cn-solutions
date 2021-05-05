@@ -68,7 +68,7 @@ class Solution:
         return rets
 
     # 线索二叉树 & 莫里斯遍历
-    def inorderTraversal(self, root: TreeNode) -> List[int]:
+    def inorderTraversal_3(self, root: TreeNode) -> List[int]:
         rets = []
         current_node = root
         while current_node is not None:
@@ -81,6 +81,29 @@ class Solution:
                 current_node.left = None
                 node.right = current_node
                 current_node = tmp_root
+            else:
+                rets.append(current_node.val)
+                current_node = current_node.right
+        return rets
+
+    # 莫里斯遍历
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        rets = []
+        current_node = root
+        while current_node is not None:
+            if current_node.left is not None:
+                # 寻找左子树的最右边节点, 将current_node及其右子树挂在该节点下
+                node = current_node.left
+                while node.right and node.right != current_node:
+                    node = node.right
+                if node.right is None:
+                    node.right = current_node
+                    current_node = current_node.left
+                else:
+                    rets.append(current_node.val)
+                    node.right = None
+                    current_node = current_node.right
+
             else:
                 rets.append(current_node.val)
                 current_node = current_node.right
