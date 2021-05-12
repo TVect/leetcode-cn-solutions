@@ -44,7 +44,7 @@ class Solution:
         return res
 
     # 栈迭代
-    def postorderTraversal(self, root: TreeNode) -> List[int]:
+    def postorderTraversal_2(self, root: TreeNode) -> List[int]:
         stack = []
         node, last_node = root, None
         res = []
@@ -65,8 +65,36 @@ class Solution:
         return res
 
     # Morris 迭代
-    def postorderTraversal_2(self, root: TreeNode) -> List[int]:
-        pass
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+
+        def add_path(tmp):
+            tmp_res = []
+            while tmp:
+                tmp_res.append(tmp.val)
+                tmp = tmp.right
+            res.extend(tmp_res[::-1])
+
+        node = root
+        while node:
+            if node.left:
+                tmp_node = node.left
+                while tmp_node.right and tmp_node.right != node:
+                    tmp_node = tmp_node.right
+                if tmp_node.right is None:
+                    # 第一次经过 node
+                    tmp_node.right = node
+                    node = node.left
+                elif tmp_node.right == node:
+                    # 第二次经过 node
+                    tmp_node.right = None
+                    add_path(node.left)
+                    node = node.right
+            else:
+                node = node.right
+
+        add_path(root)
+        return res
 
 
 def construct_tree(num_list):
