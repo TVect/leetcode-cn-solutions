@@ -30,15 +30,16 @@ class TreeNode:
 
 class Solution:
     def increasingBST(self, root: TreeNode) -> TreeNode:
-        last_node = None
+        dummy_node = TreeNode(-1)
+        last_node = dummy_node
 
         def inorder(node):
-            # 反向中序遍历
-            nonlocal last_node
-            inorder(node.right)
-            node.right = last_node
-            last_node = node
-            inorder(node.left)
-            node.left = None
+            # 中序遍历
+            if node:
+                nonlocal last_node
+                inorder(node.left)
+                last_node.right, last_node = node, node
+                inorder(node.right)
 
         inorder(root)
+        return dummy_node.right
