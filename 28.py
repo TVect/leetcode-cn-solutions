@@ -21,6 +21,17 @@
 
 class Solution:
 
+    def strStr_1(self, haystack: str, needle: str) -> int:
+        len_haystack, len_needle = len(haystack), len(needle)
+        if len_needle == 0:
+            return 0
+        if len_haystack - len_needle < 0:
+            return -1
+        for idx in range(0, len_haystack - len_needle + 1):
+            if haystack[idx: idx + len_needle] == needle:
+                return idx
+        return -1
+
     # KMP 算法
     def strStr(self, haystack: str, needle: str) -> int:
         if not needle:
